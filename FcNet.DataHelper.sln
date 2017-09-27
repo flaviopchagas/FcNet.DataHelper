@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FcNet.DataHelper", "FcNet.DataHelper\FcNet.DataHelper.csproj", "{EAEE64A2-11C6-4253-8812-4C7199AF67C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FcNet.DataHelper.Dapper", "FcNet.DataHelper.Dapper\FcNet.DataHelper.Dapper.csproj", "{D869F248-EB51-4037-BFE6-9E0B3B38D05C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAEE64A2-11C6-4253-8812-4C7199AF67C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAEE64A2-11C6-4253-8812-4C7199AF67C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAEE64A2-11C6-4253-8812-4C7199AF67C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAEE64A2-11C6-4253-8812-4C7199AF67C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D869F248-EB51-4037-BFE6-9E0B3B38D05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D869F248-EB51-4037-BFE6-9E0B3B38D05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D869F248-EB51-4037-BFE6-9E0B3B38D05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D869F248-EB51-4037-BFE6-9E0B3B38D05C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
