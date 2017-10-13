@@ -1,4 +1,5 @@
-﻿using FcNet.DataHelper.Dapper;
+﻿using FcNet.DataHelper.Common;
+using FcNet.DataHelper.Factory.Dapper;
 using System.Data.Common;
 
 namespace FcNet.DataHelper
@@ -8,7 +9,7 @@ namespace FcNet.DataHelper
         private static string connString = "";
         private static DbConnection _conn = null;
 
-        public static IRepository<TEntity> GetInstance(string connectionString, FrameworkType type = FrameworkType.Dapper, ProviderType provider = ProviderType.SqlClient)
+        public static IDataFactory<TEntity> GetInstance(string connectionString, FrameworkType type = FrameworkType.Dapper, ProviderType provider = ProviderType.SqlClient)
         {
             connString = connectionString;
             ConnectionProvider conn = new ConnectionProvider(connString, GetProvider(provider));

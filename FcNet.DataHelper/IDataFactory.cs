@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FcNet.DataHelper
 {
-    public interface IRepository<TEntity> : IDisposable where TEntity : class
+    public interface IDataFactory<TEntity> : IDisposable where TEntity : class
     {
         IEnumerable<TEntity> All();
         Task<IEnumerable<TEntity>> AllAsync();

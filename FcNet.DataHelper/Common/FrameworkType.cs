@@ -1,5 +1,4 @@
-﻿
-namespace FcNet.DataHelper
+﻿namespace FcNet.DataHelper.Common
 {
     public enum FrameworkType
     {

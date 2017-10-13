@@ -1,9 +1,6 @@
-﻿using FcNet.DataHelper.Demo.Entity;
-using System;
+﻿using FcNet.DataHelper.Common;
+using FcNet.DataHelper.Demo.Entity;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FcNet.DataHelper.Demo
 {
@@ -13,7 +10,7 @@ namespace FcNet.DataHelper.Demo
 
         static void Main(string[] args)
         {
-            IRepository<erp_persons> person = DataFactory<erp_persons>.GetInstance(connString, FrameworkType.Dapper, ProviderType.SqlClient);
+            IDataFactory<erp_persons> person = DataFactory<erp_persons>.GetInstance(connString, FrameworkType.Dapper, ProviderType.SqlClient);
 
             IEnumerable<erp_persons> all = person.All();
         }
