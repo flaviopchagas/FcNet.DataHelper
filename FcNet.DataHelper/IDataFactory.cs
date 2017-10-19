@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FcNet.DataHelper
@@ -9,14 +10,11 @@ namespace FcNet.DataHelper
         IEnumerable<TEntity> All();
         Task<IEnumerable<TEntity>> AllAsync();
 
-        IEnumerable<TEntity> GetData(string query, object parameters);
-        Task<IEnumerable<TEntity>> GetDataAsync(string query, object parameters);
+        IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> filter);
+        Task<IEnumerable<TEntity>> GetDataAsync(Expression<Func<TEntity, bool>> filter);
 
         IEnumerable<TEntity> GetDataPaginated(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true);
         Task<IEnumerable<TEntity>> GetDataPaginatedAsync(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true);
-
-        TEntity Find(object pksFields);
-        Task<TEntity> FindAsync(object pksFields);
 
         int Add(TEntity entity);
         Task<int> AddAsync(TEntity entity);
@@ -27,10 +25,10 @@ namespace FcNet.DataHelper
         void Remove(object key);
         Task RemoveAsync(object key);
 
-        int Update(TEntity entity, object pks);
-        Task<int> UpdateAsync(TEntity entity, object pks);
+        int Update(TEntity entity);
+        Task<int> UpdateAsync(TEntity entity);
 
-        int InstertOrUpdate(TEntity entity, object pks);
-        Task<int> InstertOrUpdateAsync(TEntity entity, object pks);
+        int InstertOrUpdate(TEntity entity);
+        Task<int> InstertOrUpdateAsync(TEntity entity);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using FcNet.DataHelper.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FcNet.DataHelper.Factory.Dapper
@@ -9,72 +11,97 @@ namespace FcNet.DataHelper.Factory.Dapper
     public class DapperFactory<TEntity> : IDataFactory<TEntity> where TEntity : class
     {
         private readonly DbConnection conn;
-        private string table;
-        private string select;
-        private string selectPaging;
-        private string update;
-        private string create;
-        private string delete;
+        private QueryGenerator<TEntity> queryGen;
 
         public DapperFactory(DbConnection connection)
         {
             conn = connection;
-            table = GetType().GenericTypeArguments[0].Name;
-
-            table = Common.QueryHelper<TEntity>.GetTableName();
-            select = Common.QueryHelper<TEntity>.GetSelect();
-
-            //QueryHelper<TEntity> query = new QueryHelper<TEntity>();
-            //select = query.GetSelect();
+            queryGen = new QueryGenerator<TEntity>();
         }
 
-        public int Add(TEntity entity) { throw new NotImplementedException(); }
+        public int Add(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public int Add(IEnumerable<TEntity> entities) { throw new NotImplementedException(); }
+        public int Add(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<int> AddAsync(TEntity entity) { throw new NotImplementedException(); }
+        public Task<int> AddAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<int> AddAsync(IEnumerable<TEntity> entities) { throw new NotImplementedException(); }
+        public Task<int> AddAsync(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
 
         public IEnumerable<TEntity> All()
         {
-            return conn.Query<TEntity>(select).AsList();
+            return conn.Query<TEntity>(queryGen.GenerateSelect()).AsList();
         }
 
-        public Task<IEnumerable<TEntity>> AllAsync()
+        public async Task<IEnumerable<TEntity>> AllAsync()
         {
-            IEnumerable<TEntity> result = conn.Query<TEntity>(select).AsList();
-            return Task.FromResult(result);
+            return await Task.FromResult(All());
         }
 
-        public void Dispose() { throw new NotImplementedException(); }
+        public IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> filter)
+        {
+            return conn.Query<TEntity>(queryGen.GenerateSelect(filter)).AsList();
+        }
 
-        public TEntity Find(object pksFields) { throw new NotImplementedException(); }
+        public async Task<IEnumerable<TEntity>> GetDataAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await Task.FromResult(GetData(filter));
+        }
 
-        public Task<TEntity> FindAsync(object pksFields) { throw new NotImplementedException(); }
+        public IEnumerable<TEntity> GetDataPaginated(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true)
+        {
+            throw new NotImplementedException();
+        }
 
-        public IEnumerable<TEntity> GetData(object filter) { throw new NotImplementedException(); }
+        public Task<IEnumerable<TEntity>> GetDataPaginatedAsync(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true)
+        {
+            throw new NotImplementedException();
+        }
 
-        public IEnumerable<TEntity> GetData(string query, object parameters) { throw new NotImplementedException(); }
+        public int InstertOrUpdate(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<IEnumerable<TEntity>> GetDataAsync(object filter) { throw new NotImplementedException(); }
+        public Task<int> InstertOrUpdateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<IEnumerable<TEntity>> GetDataAsync(string query, object parameters) { throw new NotImplementedException(); }
+        public void Remove(object key)
+        {
+            throw new NotImplementedException();
+        }
 
-        public IEnumerable<TEntity> GetDataPaginated(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true) { throw new NotImplementedException(); }
+        public Task RemoveAsync(object key)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<IEnumerable<TEntity>> GetDataPaginatedAsync(int top, int skip, Func<TEntity, object> orderBy, bool ascending = true) { throw new NotImplementedException(); }
+        public int Update(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public int InstertOrUpdate(TEntity entity, object pks) { throw new NotImplementedException(); }
+        public Task<int> UpdateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<int> InstertOrUpdateAsync(TEntity entity, object pks) { throw new NotImplementedException(); }
-
-        public void Remove(object key) { throw new NotImplementedException(); }
-
-        public Task RemoveAsync(object key) { throw new NotImplementedException(); }
-
-        public int Update(TEntity entity, object pks) { throw new NotImplementedException(); }
-
-        public Task<int> UpdateAsync(TEntity entity, object pks) { throw new NotImplementedException(); }
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
