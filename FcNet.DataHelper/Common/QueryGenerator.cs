@@ -100,6 +100,24 @@ namespace FcNet.DataHelper.Common
             return $"DELETE FROM {tableName} {where} ";
         }
 
+        public string GenerateInsert(string identityField = null)
+        {
+            var result = string.Empty;
+            var sb = new StringBuilder($"INSERT INTO {tableName} (");
+            var propertiesNamesDef = propertiesNames.Where(a => a != identityField).ToArray();
+
+            string camps = string.Join(",", propertiesNamesDef);
+            sb.Append($"{camps}) VALUES (");
+
+            string[] parametersCampsCol = propertiesNamesDef.Select(a => $"{charParam}{a}").ToArray();
+            string campsParameter = string.Join(",", parametersCampsCol);
+
+            sb.Append($"{campsParameter})");
+            result = sb.ToString();
+
+            return result;
+        }
+
         public string GenerateUpdate(object pks)
         {
             var pksFields = pks.GetType().GetProperties().Select(a => a.Name).ToArray();

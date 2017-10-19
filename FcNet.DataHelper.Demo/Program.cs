@@ -18,7 +18,7 @@ namespace FcNet.DataHelper.Demo
 
         static void Main(string[] args)
         {
-            //CreateSQLiteTable();
+            CreateSQLiteTable();
 
             var employee = DataFactory<Employees>.GetInstance(sqlLocalDB);
             var allEmployees = employee.All();
@@ -26,6 +26,9 @@ namespace FcNet.DataHelper.Demo
             var customer = DataFactory<Customers>.GetInstance(sqlLocalDB);
             filter = (a => a.CompanyName.Contains("an") && a.CompanyName.Contains("b"));
             var getData = customer.GetData(filter);
+
+            var persons = DataFactory<Persons>.GetInstance(sqLiteDB);
+            var allPersons = persons.All();
 
             Console.ReadLine();
         }
