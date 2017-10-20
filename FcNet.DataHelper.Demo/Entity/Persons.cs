@@ -1,8 +1,11 @@
-﻿namespace FcNet.DataHelper.Demo.Entity
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FcNet.DataHelper.Demo.Entity
 {
     public class Persons
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        [Key]
+        public int id;
+        public string name;
     }
 }

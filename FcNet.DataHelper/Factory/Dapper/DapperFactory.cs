@@ -3,6 +3,7 @@ using FcNet.DataHelper.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -69,32 +70,56 @@ namespace FcNet.DataHelper.Factory.Dapper
             throw new NotImplementedException();
         }
 
-        public int InstertOrUpdate(TEntity entity)
+        public bool Insert(TEntity entity)
+        {
+            try
+            {
+                int id = conn.Query<int>(queryGen.GenetareInsert(entity), entity).First();
+                return id > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> InsertAsync(TEntity entity)
+        {
+            return await Task.FromResult(Insert(entity));
+        }
+
+        public bool Remove(object key)
+        {
+            try
+            {
+                int rows = conn.Execute(queryGen.GenerateDelete(key), key);
+                return rows > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public Task<bool> RemoveAsync(object key)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> InstertOrUpdateAsync(TEntity entity)
+        public bool Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int rows = conn.Execute(queryGen.GenerateUpdate(entity), entity);
+                return rows > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public void Remove(object key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveAsync(object key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Update(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> UpdateAsync(TEntity entity)
+        public Task<bool> UpdateAsync(TEntity entity)
         {
             throw new NotImplementedException();
         }

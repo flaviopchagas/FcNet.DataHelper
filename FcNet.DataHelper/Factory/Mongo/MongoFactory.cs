@@ -78,32 +78,32 @@ namespace FcNet.DataHelper.Factory.Mongo
             throw new NotImplementedException();
         }
 
-        public void Remove(object key)
+        public bool Remove(object key)
         {
             throw new NotImplementedException();
         }
 
-        public Task RemoveAsync(object key)
+        public Task<bool> RemoveAsync(object key)
         {
             throw new NotImplementedException();
         }
 
-        public int Update(TEntity entity)
+        public bool Update(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> UpdateAsync(TEntity entity)
+        public Task<bool> UpdateAsync(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public int InstertOrUpdate(TEntity entity)
+        public bool Insert(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> InstertOrUpdateAsync(TEntity entity)
+        public Task<bool> InsertAsync(TEntity entity)
         {
             throw new NotImplementedException();
         }

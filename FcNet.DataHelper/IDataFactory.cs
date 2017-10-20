@@ -22,13 +22,13 @@ namespace FcNet.DataHelper
         int Add(IEnumerable<TEntity> entities);
         Task<int> AddAsync(IEnumerable<TEntity> entities);
 
-        void Remove(object key);
-        Task RemoveAsync(object key);
+        bool Remove(object key);
+        Task<bool> RemoveAsync(object key);
 
-        int Update(TEntity entity);
-        Task<int> UpdateAsync(TEntity entity);
+        bool Update(TEntity entity);
+        Task<bool> UpdateAsync(TEntity entity);
 
-        int InstertOrUpdate(TEntity entity);
-        Task<int> InstertOrUpdateAsync(TEntity entity);
+        bool Insert(TEntity entity);
+        Task<bool> InsertAsync(TEntity entity);
     }
 }

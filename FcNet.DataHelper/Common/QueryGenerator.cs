@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace FcNet.DataHelper.Common
 {
@@ -68,6 +68,7 @@ namespace FcNet.DataHelper.Common
             string where = filter.Body.ToString();
 
             where = where.Replace("AndAlso", "AND").Replace("OrElse", "OR").Replace("\"", "'");
+            where = where.Replace("Convert", "").Replace("True", "1").Replace("False", "0");
 
             while (where.Contains("Contains"))
             {
@@ -94,42 +95,126 @@ namespace FcNet.DataHelper.Common
             return $" WHERE {strWhere} ";
         }
 
-        public string GenerateDelete(object parameters)
+        public static List<KeyValuePair<string, string>> GetProperties(object item)
         {
-            var where = GenerateWhere(parameters);
+            var result = new List<KeyValuePair<string, string>>();
+
+            if (item != null)
+            {
+                var type = item.GetType();
+                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                foreach (var pi in properties)
+                {
+                    var selfValue = type.GetProperty(pi.Name).GetValue(item, null);
+
+                    if (selfValue != null)
+                    {
+                        result.Add(new KeyValuePair<string, string>(pi.Name, selfValue.ToString()));
+                    }
+                    else
+                    {
+                        result.Add(new KeyValuePair<string, string>(pi.Name, null));
+                    }
+                }
+            }
+            return result;
+        }
+
+        public string GetNamePropertyWithDataAnnotationKey(object instance)
+        {
+            // Just grabbing this to get hold of the type name:
+            var type = instance.GetType();
+
+            // Get the PropertyInfo object:
+            var properties = type.GetProperties();
+
+            string name = "";
+            var property = properties.FirstOrDefault(p => p.GetCustomAttributes(false).Any(a => a.GetType() == typeof(System.ComponentModel.DataAnnotations.KeyAttribute)));
+            if (property != null)
+            {
+                //Nome da primarykey
+                name = $"{property.Name}";
+            }
+
+            return name;
+        }
+
+        private string GenerateInsertValues(object filters)
+        {
+            string namePK = GetNamePropertyWithDataAnnotationKey(filters) + ",";
+            string valuePK = $"@{namePK}";
+
+            var filtersFields = filters.GetType().GetProperties().Select(a => a.Name).ToArray();
+            if (!filtersFields?.Any() ?? true) throw new ArgumentException($"The parameter filters isn't valid. This parameter must be a class type", nameof(filters));
+
+            var propertiesNames = filtersFields.Select(a => $"{a},").ToArray();
+            var propertiesValue = filtersFields.Select(a => $"{charParam}{a},").ToArray();
+
+            string names = "";
+            string values = "";
+
+            foreach (var item in propertiesNames)
+            {
+                if (item != namePK)
+                    names = names + item;
+            }
+
+            foreach (var item in propertiesValue)
+            {
+                if (item != valuePK)
+                    values = values + item;
+            }
+
+            names = names.Remove(names.Length - 1);
+            values = values.Remove(values.Length - 1);
+
+            return $"({names}) values ({values}); select last_insert_rowid();";
+        }
+
+        private string GenerateUpdateValues(object filters)
+        {
+            string namePK = GetNamePropertyWithDataAnnotationKey(filters);
+
+            //Pega o valor da PK
+            var valuePK = filters.GetType().GetProperty(namePK).GetValue(filters, null);
+
+            var filtersFields = filters.GetType().GetProperties().Select(a => a.Name).ToArray();
+            if (!filtersFields?.Any() ?? true) throw new ArgumentException($"The parameter filters isn't valid. This parameter must be a class type", nameof(filters));
+
+            var propertiesNames = filtersFields.Select(a => $"{a}= {charParam}{a},").ToArray();
+
+            string names = "";
+            foreach (var item in propertiesNames)
+            {
+                names = names + item;
+            }
+
+            names = names.Remove(names.Length - 1);
+
+            return $"{names} where {namePK} = {valuePK}";
+        }
+
+        public string GenerateDelete(object key)
+        {
+            var where = GenerateWhere(key);
             return $"DELETE FROM {tableName} {where} ";
         }
 
-        public string GenerateInsert(string identityField = null)
+        public string GenetareInsert(TEntity parameters)
         {
-            var result = string.Empty;
-            var sb = new StringBuilder($"INSERT INTO {tableName} (");
-            var propertiesNamesDef = propertiesNames.Where(a => a != identityField).ToArray();
+            var values = GenerateInsertValues(parameters);
 
-            string camps = string.Join(",", propertiesNamesDef);
-            sb.Append($"{camps}) VALUES (");
-
-            string[] parametersCampsCol = propertiesNamesDef.Select(a => $"{charParam}{a}").ToArray();
-            string campsParameter = string.Join(",", parametersCampsCol);
-
-            sb.Append($"{campsParameter})");
-            result = sb.ToString();
-
-            return result;
+            var query = $"insert into {tableName} {values}";
+            return query;
         }
 
         public string GenerateUpdate(object pks)
         {
-            var pksFields = pks.GetType().GetProperties().Select(a => a.Name).ToArray();
-            var sb = new StringBuilder($"UPDATE {tableName} SET ");
-            var propertiesNamesDef = propertiesNames.Where(a => !pksFields.Contains(a)).ToArray();
-            var propertiesSet = propertiesNamesDef.Select(a => $"{a} = {charParam}{a}").ToArray();
-            var strSet = string.Join(",", propertiesSet);
-            var where = GenerateWhere(pks);
+            var values = GenerateUpdateValues(pks);
+            var query = $"update {tableName} set {values}";
 
-            sb.Append($" {strSet} {where} ");
-
-            return sb.ToString();
+            return query;
         }
 
         private bool IsComplexType(PropertyInfo propertyInfo)
